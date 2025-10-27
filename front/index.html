@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityPass+ EDA Logs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">CityPass+</h1>
+            <h2 class="subtitle">EDA Logs</h2>
+            
+            <div class="toolbar">
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Buscar en logs...">
+                </div>            
+                <div class="toolbar-buttons">
+                    <button class="btn btn-dark" onclick="openSearchModal()">Buscar en base de datos</button>
+                    <button class="btn btn-dark" onclick="downloadLogs()">Descargar logs</button>
+                </div>
+            </div>
+        </div>
+
+            <div class="table-wrapper">
+                <div class="table-header">
+                    <div>ID del mensaje</div>
+                    <div>Timestamp</div>
+                    <div>Usuario</div>
+                    <div>ID de App</div>
+                    <div>Estado</div>
+                    <div>Routing_key</div>
+                    <div>Publicador</div>
+                    <div>Suscriptor</div>
+                    <div>Exchange</div>
+                    <div>Nodo</div>
+                </div>
+                <div id="logs-list"></div>
+                <div class="empty-state" id="empty-state">
+                    <h3>Esperando eventos...</h3>
+                    <p>Los logs de eventos EDA aparecerán aquí en tiempo real</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <span id="page-info" class="page-info">Esperando conexión...</span>
+        </div>>
+    </div>
+
+    <div id="search-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeSearchModal()">&times;</span>
+        <h3>Buscador de eventos</h3>
+        
+        <div class="search-form">
+            <div class="search-field">
+                <label>ID del mensaje</label>
+                <input type="text" id="search-id" placeholder="ID completo">
+            </div>
+            
+            <div class="search-field">
+                <label>Usuario</label>
+                <input type="text" id="search-user" placeholder="Nombre de usuario">
+            </div>
+            
+            <div class="search-field">
+                <label>ID de App</label>
+                <input type="text" id="search-app-id" placeholder="ID de aplicación">
+            </div>
+            
+            <div class="search-field">
+                <label>Estado</label>
+                <select id="search-state">
+                    <option value="">Todos los estados</option>
+                    <option value="publish">Publish</option>
+                    <option value="deliver">Deliver</option>
+                </select>
+            </div>
+            
+            <div class="search-field">
+                <label>Routing Key</label>
+                <input type="text" id="search-routing-key" placeholder="Routing key">
+            </div>
+            
+            <div class="search-field">
+                <label>Publicador</label>
+                <input type="text" id="search-publisher" placeholder="Nombre del publicador">
+            </div>
+            
+            <div class="search-field">
+                <label>Suscriptor</label>
+                <input type="text" id="search-subscriber" placeholder="Nombre del suscriptor">
+            </div>
+            
+            <div class="search-field">
+                <label>Exchange</label>
+                <input type="text" id="search-exchange" placeholder="Nombre del exchange">
+            </div>
+            
+            <div class="search-field">
+                <label>Nodo</label>
+                <input type="text" id="search-node" placeholder="Nombre del nodo">
+            </div>
+            
+            <div class="search-field date-field">
+                <label>Fecha desde</label>
+                <input type="date" id="search-date-from">
+            </div>
+
+            <div class="search-field date-field">
+                <label>Fecha hasta</label>
+                <input type="date" id="search-date-to">
+            </div>
+        </div>
+        
+        <div class="modal-buttons">
+            <button class="btn btn-dark" onclick="searchInDatabase()">Buscar</button>
+            <button class="btn btn-dark" onclick="clearSearchForm()">Limpiar</button>
+            <button class="btn btn-dark" onclick="downloadSearchResults()" id="download-search-btn" style="display:none;">Descargar resultados</button>
+        </div>
+        
+        <div id="search-results-container">
+            <div id="search-results-header" style="display:none;">
+                <h4>Resultados de búsqueda</h4>
+                <span id="results-count"></span>
+            </div>
+            <div id="search-results"></div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
