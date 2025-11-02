@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: citypass_logs
+      POSTGRES_USER: citypass
+      POSTGRES_PASSWORD: citypass
+    ports:
+      - "5432:5432"  
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: backend
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: citypass_logs
+      DB_USER: citypass
+      DB_PASSWORD: citypass
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "5500:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
