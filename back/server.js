@@ -44,7 +44,7 @@ app.get('/messages', async (req, res) => {
         const result = await pool.query(
             'SELECT * FROM logs ORDER BY event_ts DESC, id DESC LIMIT 100;',
         );
-        
+        console.log(result);
         res.json(result.rows);
     } catch (error) {
         console.error('Error obteniendo mensajes:', error);

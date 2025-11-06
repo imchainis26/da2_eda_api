@@ -29,7 +29,6 @@ async function updateFooter() {
     const connectionStatus = socket.connected ? 'Conectado' : 'Desconectado';
     let totalLogs = 0;
     try {
-        const res = await fetch('/logs/count');
         const data = await res.json();
         totalLogs = data.total;
     } catch {
@@ -127,25 +126,6 @@ function addMessageState(messageState) {
 let lastTimestamp = null;
 let isInitialLoad = true;
 
-function clearLogs() {
-    messageStates = [];
-    lastTimestamp = null;
-    isInitialLoad = true;
-    
-    const logsList = document.getElementById('logs-list');
-    const emptyState = document.getElementById('empty-state');
-    
-    if (logsList) {
-        logsList.innerHTML = '';
-    }
-    if (emptyState) {
-        emptyState.style.display = 'flex';
-    }
-    
-    updateFooter();
-    console.log("🗑️ Eventos EDA limpiados");
-}
-
 async function fetchMessages() {
     const emptyState = document.getElementById('empty-state');
     
@@ -153,6 +133,7 @@ async function fetchMessages() {
         const url = `${BACKEND_URL}/messages`;
         const response = await fetch(url);
         const messages = await response.json();
+        console.log(messages);
 
         console.log("Mensajes recibidos:", messages.length);
 
@@ -186,12 +167,17 @@ async function fetchMessages() {
                 lastTimestamp = messages[0].event_ts;
             }
             isInitialLoad = false;
+            
         } else {
-            const newMessages = messages.filter(msg => {
-                const msgTime = new Date(msg.event_ts).getTime();
-                const lastTime = new Date(lastTimestamp).getTime();
-                return msgTime > lastTime;
-            });
+            console.log(messages);
+            
+            const existingIds = new Set(messageStates.map(state => state.id || state.event_id));
+            
+            const newMessages = messages.filter(msg => 
+                !existingIds.has(msg.id || msg.event_id)
+            );
+            
+            console.log(newMessages);
 
             newMessages.reverse().forEach(msg => addMessageState(msg));
 
