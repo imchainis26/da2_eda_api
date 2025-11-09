@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 const pool = new Pool({
-    host: process.env.DB_HOST || 'localhost',
+    host: process.env.DB_HOST || '54.221.111.195',
     port: process.env.DB_PORT || 5432,
     database: process.env.DB_NAME || 'citypass_logs',
     user: process.env.DB_USER || 'citypass',
@@ -42,9 +42,8 @@ app.get("/logs/count", async (req, res) => {
 app.get('/messages', async (req, res) => {
     try {        
         const result = await pool.query(
-            'SELECT * FROM logs ORDER BY event_ts DESC, id DESC LIMIT 100;',
+            'SELECT * FROM logs ORDER BY id DESC LIMIT 100;',
         );
-        console.log(result);
         res.json(result.rows);
     } catch (error) {
         console.error('Error obteniendo mensajes:', error);
@@ -182,5 +181,5 @@ io.on('connection', (socket) => {
 
 const PORT = 5000;
 httpServer.listen(PORT, () => {
-    console.log(`Servidor EDA Monitor ejecutándose en http://localhost:${PORT}`);
+    console.log(`Servidor EDA Monitor ejecutándose`);
 });

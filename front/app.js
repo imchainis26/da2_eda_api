@@ -69,7 +69,6 @@ function createLogEntry(messageState) {
         <div>${shortId}</div>                                 
         <div>${formattedTimestamp}</div>                      
         <div>${messageState.user || 'N/A'}</div>             
-        <div>${messageState.app_id || 'N/A'}</div>           
         <div>${messageState.state || 'N/A'}</div>            
         <div>${messageState.routing_keys || 'N/A'}</div>     
         <div>${messageState.publisher || 'N/A'}</div>         
@@ -169,7 +168,6 @@ async function fetchMessages() {
             isInitialLoad = false;
             
         } else {
-            console.log(messages);
             
             const existingIds = new Set(messageStates.map(state => state.id || state.event_id));
             
@@ -177,8 +175,6 @@ async function fetchMessages() {
                 !existingIds.has(msg.id || msg.event_id)
             );
             
-            console.log(newMessages);
-
             newMessages.reverse().forEach(msg => addMessageState(msg));
 
             if (newMessages.length > 0) {
