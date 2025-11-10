@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  trazabilidad:
+    build: ./trazabilidad
+    container_name: citypass_trazabilidad
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_HOST=54.221.111.195
+      - PGHOST=54.221.111.195
+      - PGPORT=5432
+      - PGDATABASE=citypass_logs
+      - PGUSER=citypass
+      - PGPASSWORD=citypass
+    networks:
+      - citypass_network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  back:
+    build: ./back
+    container_name: citypass_back
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - RABBITMQ_HOST=54.221.111.195
+      - PGHOST=54.221.111.195
+      - PGPORT=5432
+      - PGDATABASE=citypass_logs
+      - PGUSER=citypass
+      - PGPASSWORD=citypass
+    networks:
+      - citypass_network
+    depends_on:
+      - trazabilidad
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  front:
+    build: ./front
+    container_name: citypass_front
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    networks:
+      - citypass_network
+    depends_on:
+      - back
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  citypass_network:
+    driver: bridge
