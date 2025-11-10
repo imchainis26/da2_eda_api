@@ -127,7 +127,7 @@ body {
         minmax(70px, 0.7fr)
         minmax(70px, 0.7fr)  
         minmax(200px, 2fr)
-        minmax(50px, 0.5fr)  
+        minmax(100px, 1fr)  
         minmax(100px, 1fr) 
         minmax(100px, 1fr) 
         minmax(100px, 1fr);
@@ -222,7 +222,7 @@ body {
         minmax(70px, 0.7fr)
         minmax(70px, 0.7fr)  
         minmax(200px, 2fr)
-        minmax(50px, 0.5fr)  
+        minmax(100px, 1fr)  
         minmax(100px, 1fr) 
         minmax(100px, 1fr) 
         minmax(100px, 1fr);
@@ -440,7 +440,7 @@ body {
         minmax(70px, 0.7fr)
         minmax(70px, 0.7fr)  
         minmax(200px, 2fr)
-        minmax(50px, 0.5fr)  
+        minmax(100px, 1fr)  
         minmax(100px, 1fr) 
         minmax(100px, 1fr) 
         minmax(100px, 1fr);
@@ -596,7 +596,7 @@ body {
         minmax(70px, 0.7fr)
         minmax(70px, 0.7fr)  
         minmax(200px, 2fr)
-        minmax(70px, 0.7fr)  
+        minmax(100px, 1fr)  
         minmax(100px, 1fr) 
         minmax(100px, 1fr) 
         minmax(100px, 1fr);

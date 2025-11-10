@@ -180,6 +180,6 @@ io.on('connection', (socket) => {
 });
 
 const PORT = 5000;
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT, "0.0.0.0", () => {
     console.log(`Servidor EDA Monitor ejecutándose`);
 });
