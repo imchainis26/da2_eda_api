@@ -6,8 +6,8 @@ services:
     container_name: citypass_trazabilidad
     restart: unless-stopped
     environment:
-      - RABBITMQ_HOST=54.221.111.195
-      - PGHOST=54.221.111.195
+      - RABBITMQ_HOST=172.31.19.186
+      - PGHOST=172.31.19.186
       - PGPORT=5432
       - PGDATABASE=citypass_logs
       - PGUSER=citypass
@@ -25,11 +25,12 @@ services:
     container_name: citypass_back
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "5000:5000"
     environment:
       - NODE_ENV=production
-      - RABBITMQ_HOST=54.221.111.195
-      - PGHOST=54.221.111.195
+      - PORT=5000
+      - RABBITMQ_HOST=172.31.19.186
+      - PGHOST=172.31.19.186
       - PGPORT=5432
       - PGDATABASE=citypass_logs
       - PGUSER=citypass
@@ -49,7 +50,9 @@ services:
     container_name: citypass_front
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "5500:80"
+    environment:
+      - VITE_BACKEND_URL=http://citypass_back:5000
     networks:
       - citypass_network
     depends_on:

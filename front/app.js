@@ -1,5 +1,5 @@
 let messageStates = [];
-const BACKEND_URL = 'http://172.31.19.186:5000';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL ?? 'http://citypass_back:5000';
 const socket = io(BACKEND_URL);
 
 const SUBSCRIBER_GLOSSARY = {
