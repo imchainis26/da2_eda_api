@@ -8,7 +8,13 @@ const SUBSCRIBER_GLOSSARY = {
     'movilidad_def': 'Movilidad',
     'emergencias_def': 'Emergencias',
     'cultura_def': 'Cultura',
-    'analitica_def': 'Analítica'
+    'analitica_def': 'Analítica',
+    'residuos_dlx': 'Residuos',
+    'reclamos_dlx': 'Reclamos',
+    'movilidad_dlx': 'Movilidad',
+    'emergencias_dlx': 'Emergencias',
+    'cultura_dlx': 'Cultura',
+    'analitica_dlx': 'Analítica'
 };
 
 const USER_GLOSSARY = {
