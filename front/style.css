@@ -127,7 +127,7 @@ body {
         minmax(70px, 0.7fr)
         minmax(70px, 0.7fr)  
         minmax(200px, 2fr)
-        minmax(100px, 1fr)  
+        minmax(50px, 0.5fr)  
         minmax(100px, 1fr) 
         minmax(100px, 1fr) 
         minmax(100px, 1fr);
@@ -222,7 +222,7 @@ body {
         minmax(70px, 0.7fr)
         minmax(70px, 0.7fr)  
         minmax(200px, 2fr)
-        minmax(100px, 1fr)  
+        minmax(50px, 0.5fr)  
         minmax(100px, 1fr) 
         minmax(100px, 1fr) 
         minmax(100px, 1fr);
@@ -434,16 +434,16 @@ body {
 
 .table-header, .log-entry {
   display: grid;
-  grid-template-columns: 
-      minmax(100px, 1fr)  
-      minmax(150px, 1fr)
-      minmax(70px, 0.7fr)
-      minmax(70px, 0.7fr)  
-      minmax(200px, 2fr)
-      minmax(100px, 1fr)  
-      minmax(100px, 1fr) 
-      minmax(100px, 1fr) 
-      minmax(100px, 1fr);
+    grid-template-columns: 
+        minmax(100px, 1fr)  
+        minmax(150px, 1fr)
+        minmax(70px, 0.7fr)
+        minmax(70px, 0.7fr)  
+        minmax(200px, 2fr)
+        minmax(50px, 0.5fr)  
+        minmax(100px, 1fr) 
+        minmax(100px, 1fr) 
+        minmax(100px, 1fr);
   min-width: 1100px;
 }
 
@@ -596,7 +596,7 @@ body {
         minmax(70px, 0.7fr)
         minmax(70px, 0.7fr)  
         minmax(200px, 2fr)
-        minmax(100px, 1fr)  
+        minmax(70px, 0.7fr)  
         minmax(100px, 1fr) 
         minmax(100px, 1fr) 
         minmax(100px, 1fr);

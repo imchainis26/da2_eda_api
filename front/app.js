@@ -11,6 +11,24 @@ const SUBSCRIBER_GLOSSARY = {
     'analitica_def': 'Analítica'
 };
 
+const USER_GLOSSARY = {
+    'user_residuos': 'Residuos',
+    'user_reclamos': 'Reclamos',
+    'user_movilidad': 'Movilidad',
+    'user_emergencias': 'Emergencias',
+    'user_cultura': 'Cultura',
+    'user_analitica': 'Analítica'
+};
+
+const PUBLISHER_GLOSSARY = {
+    'residuos': 'Residuos',
+    'reclamos': 'Reclamos',
+    'movilidad': 'Movilidad',
+    'emergencias': 'Emergencias',
+    'cultura': 'Cultura',
+    'analitica': 'Analítica'
+};
+
 socket.on("connect", () => {
     console.log("Conectado al monitor de estados EDA!");
     updateFooter();
@@ -50,6 +68,35 @@ function formatSubscriber(subscriberText) {
     return formatted.join(', ');
 }
 
+function formatPublisher(publisherText) {
+    if (!publisherText || publisherText === 'N/A') return 'N/A';
+    
+    let cleaned = publisherText.replace(/[{}]/g, '').trim();
+    
+    let items = cleaned.split(',').map(item => item.trim());
+    
+    let formatted = items.map(item => PUBLISHER_GLOSSARY[item] || item);
+    
+    return formatted.join(', ');
+}
+
+function formatUser(userText) {
+    if (!userText || userText === 'N/A')
+        return 'N/A';
+
+    let cleaned = userText.replace(/[{}]/g, '').trim();
+
+    let parts = cleaned.split('_');
+    if (parts[0] === 'user') {
+        parts.shift();
+    }
+
+    let formatted = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1));
+
+    return formatted.join(' ');
+}
+
+
 function createLogEntry(messageState) {
     console.log("Creando entrada para:", messageState);
 
@@ -63,15 +110,17 @@ function createLogEntry(messageState) {
 
     const shortId = messageState.id?.length > 8 ? messageState.id.substring(0, 8) + '...' : (messageState.id || 'N/A');
     const formattedSubscriber = formatSubscriber(messageState.subscriber);
+    const formattedPublisher = formatPublisher(messageState.publisher)
+    const formattedUser = formatUser(messageState.user);
 
     return `
     <div class="log-entry" data-status="${messageState.state}" data-topic="${messageState.routing_keys}" data-id="${messageState.id}">
         <div>${shortId}</div>                                 
         <div>${formattedTimestamp}</div>                      
-        <div>${messageState.user || 'N/A'}</div>             
+        <div>${formattedUser}</div>             
         <div>${messageState.state || 'N/A'}</div>            
         <div>${messageState.routing_keys || 'N/A'}</div>     
-        <div>${messageState.publisher || 'N/A'}</div>         
+        <div>${formattedPublisher}</div>         
         <div>${formattedSubscriber}</div>       
         <div>${messageState.exchange_name || 'N/A'}</div>    
         <div>${messageState.node || 'N/A'}</div>             
