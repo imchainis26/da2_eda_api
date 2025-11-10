@@ -1,5 +1,5 @@
 let messageStates = [];
-const BACKEND_URL = 'http://172.31.19.186:5000';
+const BACKEND_URL = 'http://172.31.27.37:5000';
 const socket = io(BACKEND_URL);
 
 const SUBSCRIBER_GLOSSARY = {
