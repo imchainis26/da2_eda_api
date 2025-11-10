@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 const pool = new Pool({
-    host: process.env.DB_HOST || '54.221.111.195',
+    host: process.env.DB_HOST || '172.31.19.186',
     port: process.env.DB_PORT || 5432,
     database: process.env.DB_NAME || 'citypass_logs',
     user: process.env.DB_USER || 'citypass',
