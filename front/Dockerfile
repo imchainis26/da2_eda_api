@@ -1,11 +1,11 @@
 FROM nginx:alpine
 
-COPY . /usr/share/nginx/html
+WORKDIR /usr/share/nginx/html
 
-COPY .env /app/.env
-RUN BACKEND_URL=$(grep BACKEND_URL /app/.env | cut -d '=' -f2) \
-    && sed -i "s|{{BACKEND_URL}}|$BACKEND_URL|g" /app/env.js
+COPY . .
 
-EXPOSE 5500:80
+RUN BACKEND_URL=$(grep BACKEND_URL .env | cut -d '=' -f2) \
+    && sed -i "s|{{BACKEND_URL}}|${BACKEND_URL}|g" env.js
 
+EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
