@@ -1,5 +1,5 @@
 let messageStates = [];
-const BACKEND_URL = window.env.BACKEND_URL;
+const BACKEND_URL = window.ENV.BACKEND_URL;
 const socket = io(BACKEND_URL);
 
 const SUBSCRIBER_GLOSSARY = {
