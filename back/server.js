@@ -4,6 +4,7 @@ import cors from 'cors';
 import pg from 'pg';
 const { Pool } = pg;
 import { Server as SocketIO } from "socket.io";
+import 'dotenv/config';
 
 
 const app = express();
@@ -16,11 +17,11 @@ app.use(cors());
 app.use(express.json());
 
 const pool = new Pool({
-    host: process.env.DB_HOST || '172.31.19.186',
-    port: process.env.DB_PORT || 5432,
-    database: process.env.DB_NAME || 'citypass_logs',
-    user: process.env.DB_USER || 'citypass',
-    password: process.env.DB_PASSWORD || 'citypass',
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     max: 20,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000,
@@ -179,7 +180,7 @@ io.on('connection', (socket) => {
     });
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 httpServer.listen(PORT, "0.0.0.0", () => {
-    console.log(`Servidor EDA Monitor ejecutándose`);
+    console.log(`Servidor EDA Monitor ejecutándose en puerto ${PORT}`);
 });
