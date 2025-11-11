@@ -287,7 +287,6 @@ function closeSearchModal() {
 function clearSearchForm() {
     document.getElementById('search-id').value = '';
     document.getElementById('search-user').value = '';
-    document.getElementById('search-app-id').value = '';
     document.getElementById('search-state').value = '';
     document.getElementById('search-routing-key').value = '';
     document.getElementById('search-publisher').value = '';
@@ -306,7 +305,6 @@ async function searchInDatabase() {
     const searchParams = {
         id: document.getElementById('search-id').value.trim(),
         user: document.getElementById('search-user').value.trim(),
-        app_id: document.getElementById('search-app-id').value.trim(),
         state: document.getElementById('search-state').value.trim(),
         routing_keys: document.getElementById('search-routing-key').value.trim(),
         publisher: document.getElementById('search-publisher').value.trim(),
@@ -381,7 +379,6 @@ function displaySearchResults(results) {
             <div>ID del mensaje</div>
             <div>Timestamp</div>
             <div>Usuario</div>
-            <div>ID de App</div>
             <div>Estado</div>
             <div>Routing_key</div>
             <div>Publicador</div>
