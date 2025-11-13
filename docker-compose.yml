@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     environment:
       - RABBITMQ_HOST=172.31.19.186
-      - PGHOST=172.31.19.186
+      - PGHOST=postgres
       - PGPORT=5432
       - PGDATABASE=citypass_logs
       - PGUSER=citypass
@@ -33,7 +33,7 @@ services:
       - NODE_ENV=production
       - PORT=5000
       - RABBITMQ_HOST=172.31.19.186
-      - PGHOST=172.31.19.186
+      - PGHOST=172.31.27.37
       - PGPORT=5432
       - PGDATABASE=citypass_logs
       - PGUSER=citypass
