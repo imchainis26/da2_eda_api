@@ -63,6 +63,26 @@ services:
         max-size: "10m"
         max-file: "3"
 
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_DB: citypass_logs
+      POSTGRES_USER: citypass
+      POSTGRES_PASSWORD: citypass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U citypass -d citypass_logs"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - citypass_network
+
 networks:
   citypass_network:
     driver: bridge
