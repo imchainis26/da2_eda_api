@@ -144,15 +144,8 @@ def callback(ch, method, properties, body):
     trace_data["id"] = trace_props.get("message_id")
     trace_data["user"] = headers.get("user")
     trace_data["exchange_name"] = headers.get("exchange_name")
-    
-    if properties.headers and 'x-death' in properties.headers:
-        death_info = properties.headers['x-death'][0]
-        original_rk = death_info.get('routing-keys', [None])[0]
-        trace_data["routing_keys"] = [original_rk] if original_rk else []
-        trace_data["publisher"] = original_rk.split(".")[0] if original_rk else None
-    else:
-        trace_data["routing_keys"] = headers.get("routing_keys", [])
-        trace_data["publisher"] = trace_data["routing_keys"][0].split(".")[0] if trace_data["routing_keys"] else None
+    trace_data["routing_keys"] = headers.get("routing_keys", [])
+    trace_data["publisher"] = trace_data["routing_keys"][0].split(".")[0] if trace_data["routing_keys"] else None
 
     if state == "deliver" and len(parts) > 1:
         destination = parts[1]
