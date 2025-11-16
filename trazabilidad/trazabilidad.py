@@ -4,7 +4,7 @@ import pika
 from psycopg2.pool import SimpleConnectionPool
 import requests
 
-PG_HOST = os.getenv("PGHOST", "172.31.27.37")
+PG_HOST = os.getenv("PGHOST", "postgres")
 PG_PORT = int(os.getenv("PGPORT", "5432"))
 PG_DB   = os.getenv("PGDATABASE", "citypass_logs")
 PG_USER = os.getenv("PGUSER", "citypass")
