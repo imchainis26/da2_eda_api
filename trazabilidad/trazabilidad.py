@@ -10,6 +10,12 @@ PG_DB   = os.getenv("PGDATABASE", "citypass_logs")
 PG_USER = os.getenv("PGUSER", "citypass")
 PG_PASS = os.getenv("PGPASSWORD", "citypass")
 
+RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', 'eda-nlb-5a241fed574cc8e8.elb.us-east-1.amazonaws.com')
+RABBITMQ_PORT = int(os.getenv('RABBITMQ_PORT', '5672'))
+RABBITMQ_USER = os.getenv('RABBITMQ_USER', 'guest')
+RABBITMQ_PASS = os.getenv('RABBITMQ_PASS', 'guest')
+RABBITMQ_MGMT_PORT = int(os.getenv('RABBITMQ_MGMT_PORT', '15672'))
+
 pg_pool = None
 while not pg_pool:
     try:
@@ -87,44 +93,54 @@ def save_event(trace_data):
 
 init_db()
 
-credentials = pika.PlainCredentials('guest', 'guest')
+credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
 parameters = pika.ConnectionParameters(
-    host=os.getenv('RABBITMQ_HOST', '54.221.111.195'),
-    port=5672,
+    host=RABBITMQ_HOST,
+    port=RABBITMQ_PORT,
     virtual_host='/',
     credentials=credentials,
-    heartbeat=30,
-    blocked_connection_timeout=300
+    heartbeat=600,
+    blocked_connection_timeout=300,
+    connection_attempts=3,
+    retry_delay=2,
+    socket_timeout=10,
+    stack_timeout=10
 )
 
 def connect_rabbit():
+    print(f"[Rabbit] Intentando conectar a {RABBITMQ_HOST}:{RABBITMQ_PORT}")
+    print(f"[Rabbit] Usuario: {RABBITMQ_USER}, VHost: /")
     while True:
         try:
             conn = pika.BlockingConnection(parameters)
-            print("[Rabbit] Conectado")
+            # Obtener info del nodo conectado
+            server_props = conn._impl.server_properties
+            node_name = server_props.get('cluster_name', 'unknown')
+            print(f"[Rabbit] Conectado al cluster via NLB - Node info: {node_name}")
             return conn
         except Exception as e:
-            print(f"[Rabbit] No disponible aún: {e}. Reintentando...")
+            import traceback
+            print(f"[Rabbit] Error de conexión: {type(e).__name__}: {str(e)}")
+            print(f"[Rabbit] Traceback: {traceback.format_exc()}")
+            print("[Rabbit] Reintentando en 3 segundos...")
             time.sleep(3)
 
-connection = connect_rabbit()
-channel = connection.channel()
-
 def get_consumer_info_from_tag(consumer_tag):
-    import requests
+    """Consulta info del consumer via Management API a través del NLB"""
     try:
         response = requests.get(
-            'http://54.221.111.195:15672/api/consumers',
-            auth=('guest', 'guest'),
-            timeout=2
+            f'http://{RABBITMQ_HOST}:{RABBITMQ_MGMT_PORT}/api/consumers',
+            auth=(RABBITMQ_USER, RABBITMQ_PASS),
+            timeout=5
         )
-        for consumer in response.json():
-            if consumer.get('consumer_tag') == consumer_tag:
-                return {
-                    'queue': consumer['queue']['name'],
-                    'connection_name': consumer.get('channel_details', {}).get('connection_name'),
-                    'node': consumer.get('node')
-                }
+        if response.status_code == 200:
+            for consumer in response.json():
+                if consumer.get('consumer_tag') == consumer_tag:
+                    return {
+                        'queue': consumer['queue']['name'],
+                        'connection_name': consumer.get('channel_details', {}).get('connection_name'),
+                        'node': consumer.get('node')
+                    }
     except Exception as e:
         print(f"[API] Error consultando consumer: {e}")
     return None
@@ -134,7 +150,7 @@ def callback(ch, method, properties, body):
     routing_key = getattr(method, "routing_key", "")
     parts = routing_key.split(".")
 
-    state = getattr(method, "routing_key", None).split(".")[0]
+    state = routing_key.split(".")[0] if routing_key else "unknown"
     trace_data["state"] = state
 
     headers = getattr(properties, "headers", {}) if properties else {}
@@ -154,16 +170,28 @@ def callback(ch, method, properties, body):
     if not trace_data.get("subscriber"):
         trace_data["subscriber"] = headers.get("routed_queues") or ["(desconocido)"]
 
-    trace_data["node"] = trace_data.get("node") or headers.get("node")
+    trace_data["node"] = headers.get("node") or trace_props.get("node")
 
     try:
         save_event(trace_data)
-        print("[OK] Evento guardado:", trace_data)
+        print(f"[OK] Evento guardado: state={state}, node={trace_data.get('node', 'N/A')}, exchange={trace_data.get('exchange_name', 'N/A')}")
     except Exception as e:
-        print("[DB] Error guardando:", e)
+        print(f"[DB] Error guardando: {e}")
 
 
+connection = connect_rabbit()
+channel = connection.channel()
+
+channel.basic_qos(prefetch_count=10)
 channel.basic_consume(queue="trazabilidad", on_message_callback=callback, auto_ack=True)
 
-print(" [*] Esperando mensajes en trazabilidad. Ctrl+C para salir")
-channel.start_consuming()
+print(f" [*] Esperando mensajes en 'trazabilidad' desde {RABBITMQ_HOST}")
+print(" [*] Conectado via NLB al cluster RabbitMQ. Ctrl+C para salir")
+
+try:
+    channel.start_consuming()
+except KeyboardInterrupt:
+    print("\n[*] Cerrando conexión...")
+    channel.stop_consuming()
+    connection.close()
+    print("[*] Conexión cerrada")
